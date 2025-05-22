@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "843581824692",
+    "project_id": "boshqadunyoostonasi",
+    "storage_bucket": "boshqadunyoostonasi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843581824692:android:eb5ee76bcb22b7430501e1",
+        "android_client_info": {
+          "package_name": "com.javohirbekcoder.boshqa_dunyo_ostonasi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843581824692-4297mahpttkp4kc2jcelquc9frh5fvog.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.javohirbekcoder.boshqa_dunyo_ostonasi",
+            "certificate_hash": "b40995c12e24cceb52a28308238ca6a172703284"
+          }
+        },
+        {
+          "client_id": "843581824692-g1occ2trddjvpl8jod68mlc0v1l05qta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARIAxY6OppEd9vA6UQiDLCyW9wE9UAKv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843581824692-g1occ2trddjvpl8jod68mlc0v1l05qta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
