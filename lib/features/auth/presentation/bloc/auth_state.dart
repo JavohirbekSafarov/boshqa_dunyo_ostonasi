@@ -13,4 +13,5 @@ class Authenticated extends AuthState {
 class Unauthenticated extends AuthState {
 }
 
-class AuthAnonymous extends AuthState {}
+class AuthAnonymous extends AuthState {
+}

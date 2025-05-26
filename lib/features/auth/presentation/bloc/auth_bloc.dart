@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -20,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onStarted(AuthStarted event, Emitter<AuthState> emit) async {
     final user = _auth.currentUser;
     if (user == null) {
+      // ignore: unused_local_variable
       final anonUser = await _auth.signInAnonymously();
       emit(AuthAnonymous());
     } else if (user.isAnonymous) {
@@ -38,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _onLoggedOut(AuthLoggedOut event, Emitter<AuthState> emit) async {
     await _auth.signOut();
+    // ignore: unused_local_variable
     final anonUser = await _auth.signInAnonymously();
     emit(AuthAnonymous());
   }
@@ -56,7 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final userCred = await _auth.signInWithCredential(credential);
       emit(Authenticated(userCred.user!.uid));
     } catch (e) {
-      print("Google login error: $e");
+      print('Google login error: $e');
       emit(AuthAnonymous());
     }
   }
@@ -73,7 +75,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print('+++++++++++++++++++++++++++Email login successfull!');
       }
     } catch (e) {
-      print("+++++++++++++++++++++++++++Email login error: $e");
+      print('+++++++++++++++++++++++++++Email login error: $e');
       emit(AuthAnonymous());
     }
   }
