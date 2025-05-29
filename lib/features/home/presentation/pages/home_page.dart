@@ -1,6 +1,5 @@
 import 'package:boshqa_dunyo_ostonasi/core/constants/app_routes.dart';
 import 'package:boshqa_dunyo_ostonasi/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +19,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home page'),
+        title: Text(
+          'Home page',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.blueGrey,
         actions: [
           BlocBuilder<AuthBloc, AuthState>(
@@ -40,49 +42,41 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.blueGrey[100],
       body: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          if (state is HomeLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is HomeLoaded) {
-            return state.items.isNotEmpty
-                ? ListView.builder(
-                  itemCount: state.items.length,
-                  itemBuilder: (_, index) {
-                    final item = state.items[index];
-                    return FeedItemTile(item: item);
-                  },
-                )
-                : const Center(child: Text('Ma\'lumotlar mavjud emas!'));
-          } else if (state is HomeError) {
-            return Center(child: Text('Xatolik: ${state.message}'));
-          }
-          return const SizedBox();
-        },
-      ),
-      floatingActionButton: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          return state is Authenticated
-              ? FloatingActionButton(
-                onPressed: () async {
-                  await FirebaseFirestore.instance
-                      .collection('poem')
-                      .add({
-                        'id': 'poem_001',
-                        'type': 'poem',
-                        'title': 'Bahor Nafasi',
-                        'content': 'Bahor keldi, gullar ochildi...',
-                        'author': 'Alisher Navoi',
-                        'authorId': state.userId,
-                        'likes': 0,
-                        'createdAt': FieldValue.serverTimestamp(),
-                      })
-                      .then((onValue) => print('++++++++++++++++++++++Poem added!'));
-                },
-                child: Text('Add'),
-              )
-              : const SizedBox();
-        },
+        builder:
+            (context, state) => RefreshIndicator(
+              onRefresh: () async {
+                context.read<HomeBloc>().add(RefreshFeed());
+              },
+              child: _buildBody(state),
+            ),
       ),
     );
+  }
+
+  Widget _buildBody(HomeState state) {
+    print(' ++++++++++++++++++++++ state is $state');
+    switch (state.runtimeType) {
+      case HomeLoading:
+        return const Center(child: CircularProgressIndicator());
+
+      case HomeLoaded:
+        final loadedState = state as HomeLoaded;
+        return loadedState.items.isNotEmpty
+            ? ListView.builder(
+              itemCount: loadedState.items.length,
+              itemBuilder: (_, index) {
+                final item = loadedState.items[index];
+                return FeedItemTile(item: item);
+              },
+            )
+            : const Center(child: Text('Ma\'lumotlar mavjud emas!'));
+
+      case HomeError:
+        final errorState = state as HomeError;
+        return Center(child: Text('Xatolik: ${errorState.message}'));
+
+      default:
+        return const SizedBox();
+    }
   }
 }

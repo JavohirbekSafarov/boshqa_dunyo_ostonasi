@@ -1,29 +1,54 @@
 import 'package:boshqa_dunyo_ostonasi/core/constants/app_routes.dart';
 import 'package:boshqa_dunyo_ostonasi/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:boshqa_dunyo_ostonasi/features/home/presentation/bloc/home_bloc.dart';
 import 'package:boshqa_dunyo_ostonasi/features/poem/domain/entities/poem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class PoemDetailPage extends StatelessWidget {
+class PoemDetailPage extends StatefulWidget {
   final Poem poem;
 
   const PoemDetailPage({super.key, required this.poem});
 
   @override
+  State<PoemDetailPage> createState() => _PoemDetailPageState();
+}
+
+class _PoemDetailPageState extends State<PoemDetailPage> {
+  bool _isLiked = false;
+  @override
   Widget build(BuildContext context) {
     final isLoggedIn = context.read<AuthBloc>().state is Authenticated;
+
     return Scaffold(
+      backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueGrey,
-        title: Text(poem.title),
+        title: Text(
+          widget.poem.title,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         actions: [
           isLoggedIn
               ? IconButton(
+                icon: Icon(
+                  Icons.favorite_border,
+                  color: _isLiked ? Colors.red : Colors.white,
+                ),
                 onPressed: () {
-                  // like logic
+                  if (!_isLiked) {
+                    context.read<HomeBloc>().add(LikeItem(widget.poem));
+                    setState(() {
+                      _isLiked = true;
+                    });
+                  } else {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Yoqtirilgan!')));
+                  }
                 },
-                icon: Icon(Icons.favorite_border),
               )
               : IconButton(
                 onPressed: () {
@@ -33,8 +58,13 @@ class PoemDetailPage extends StatelessWidget {
               ),
         ],
       ),
-      body: Padding(padding: EdgeInsets.all(16.0), child: Text(poem.content, style: TextStyle(fontSize: 18))),
-   /*   floatingActionButton: Row(
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Scrollbar(
+          child: Text(widget.poem.content, style: TextStyle(fontSize: 18)),
+        ),
+      ),
+      /*   floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.small(

@@ -42,9 +42,22 @@ class PoemModel {
     title: title,
     content: content,
     author: author,
-    //createdAt: createdAt,
+    createdAt: createdAt,
     authorId: authorId,
     likes: likes,
     type: type,
   );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type,
+      'content': content,
+      'title': title,
+      'author': author,
+      'authorId': authorId,
+      'createdAt': createdAt.toIso8601String(),
+      'likes': likes,
+    };
+  }
 }

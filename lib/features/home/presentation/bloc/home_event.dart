@@ -8,3 +8,8 @@ sealed class HomeEvent extends Equatable {
 }
 
 class LoadFeed extends HomeEvent{}
+class RefreshFeed extends HomeEvent{}
+class LikeItem extends HomeEvent {
+  final FeedItem item;
+  const LikeItem(this.item);
+}

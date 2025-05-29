@@ -1,9 +1,12 @@
 import 'package:boshqa_dunyo_ostonasi/core/router/app_router.dart';
 import 'package:boshqa_dunyo_ostonasi/features/home/data/repository_impl/feedrepository_impl.dart';
 import 'package:boshqa_dunyo_ostonasi/features/home/presentation/bloc/home_bloc.dart';
+import 'package:boshqa_dunyo_ostonasi/features/profile/presentation/bloc/bloc/profile_bloc.dart';
+import 'package:boshqa_dunyo_ostonasi/features/upload/presentation/bloc/bloc/upload_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
@@ -20,7 +23,11 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FeedRepository repository = FeedRepositoryImpl(FirebaseFirestore.instance);
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final FeedRepository repository = FeedRepositoryImpl(
+    firestore: FirebaseFirestore.instance,
+  );
 
   MyApp({super.key});
 
@@ -30,8 +37,21 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => AuthBloc(_auth)..add(AuthStarted())),
         BlocProvider(create: (_) => HomeBloc(repository)..add(LoadFeed())),
+        BlocProvider(
+          create:
+              (_) => UploadBloc(
+                auth: _auth,
+                firestore: _firebaseFirestore,
+                storage: _firebaseStorage,
+              ),
+        ),
+        BlocProvider(create: (_) => ProfileBloc(_auth))
       ],
-      child: MaterialApp.router(routerConfig: appRouter, debugShowCheckedModeBanner: false),
+      child: MaterialApp.router(
+        routerConfig: appRouter,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(fontFamily: 'Handlee'),
+      ),
     );
   }
 }

@@ -5,7 +5,7 @@ abstract class FeedItem {
   final String title;
   final String author;
   final String authorId;
-  final DateTime? createdAt = null;
+  final DateTime createdAt;
   final int likes;
 
   FeedItem({
@@ -15,6 +15,20 @@ abstract class FeedItem {
     required this.content,
     required this.title,
     required this.author,
+    required this.createdAt,
     required this.likes,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type,
+      'content': content,
+      'title': title,
+      'author': author,
+      'authorId': authorId,
+      'createdAt': createdAt.toIso8601String(),
+      'likes': likes,
+    };
+  }
 }

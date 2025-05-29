@@ -16,40 +16,58 @@ class LoginPage extends StatelessWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
-          // ✅ Login muvaffaqiyatli bo‘lsa Home sahifaga o‘tkazamiz
           context.go(AppRoutes.HomePage); // yoki kerakli route nomi
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Xush kelibsiz!')));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Xush kelibsiz!')));
         } else if (state is AuthAnonymous) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Qandaydir xatolik!')));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Qandaydir xatolik!')));
         } else {
           showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(title: Text('Wait...'), content: CircularProgressIndicator());
+              return AlertDialog(
+                title: Text('Wait...'),
+                content: CircularProgressIndicator(),
+              );
             },
           );
         }
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(title: Text('Login'), backgroundColor: Colors.blueGrey),
+          appBar: AppBar(
+            title: Text('Login', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.blueGrey,
+          ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 TextField(
                   controller: emailController,
-                  decoration: InputDecoration(hintText: 'Email', labelText: 'email@gmail.com'),
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    labelText: 'email@gmail.com',
+                  ),
                 ),
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(hintText: 'Password', labelText: 'password'),
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    labelText: 'password',
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(
-                      AuthWithEmailRequested(emailController.text.trim(), passwordController.text.trim()),
+                      AuthWithEmailRequested(
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
+                      ),
                     );
                     // ❌ Navigator.pop(context); bu yerda bo‘lmasligi kerak
                   },

@@ -7,6 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/upload/presentation/pages/upload_page.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/shop/presentation/pages/shop_page.dart';
+import '../widgets/main_scaffold.dart';
 
 final _auth = FirebaseAuth.instance;
 
@@ -21,9 +25,26 @@ final GoRouter appRouter = GoRouter(
     return null;
   },
   routes: [
+    ShellRoute(
+      builder: (context, state, child) => MainScaffold(child: child),
+      routes: [
+        GoRoute(
+          path: AppRoutes.HomePage,
+          builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: AppRoutes.UploadPage,
+          builder: (context, state) => const UploadPage(),
+        ),
+        GoRoute(
+          path: AppRoutes.ProfilePage,
+          builder: (context, state) => const ProfilePage(),
+        ),
+      ],
+    ),
     GoRoute(
-      path: AppRoutes.HomePage,
-      builder: (context, state) => const HomePage(),
+      path: AppRoutes.ShopPage,
+      builder: (context, state) => const ShopPage(),
     ),
     GoRoute(
       path: AppRoutes.LoginPage,
@@ -43,10 +64,5 @@ final GoRouter appRouter = GoRouter(
         return PoemDetailPage(poem: poem);
       },
     ),
-    /* GoRoute(
-      path: '/profile',
-      builder: (context, state) => const ProfilePage(),
-    ),*/
-    // Qo‘shimcha: /poems, /pics, /shop, /poem/:id, /pic/:id va hokazo
   ],
 );
