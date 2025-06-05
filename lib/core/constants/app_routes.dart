@@ -8,4 +8,6 @@ class AppRoutes {
   static const String UploadPage = '/upload';
   static const String ProfilePage = '/profile';
   static const String ShopPage = '/shop';
+  static const String BookUploadPage = "/book_upload";
+  static const String BookDetailPage = "/book_detail";
 }

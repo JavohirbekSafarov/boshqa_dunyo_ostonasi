@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +55,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBody(HomeState state) {
-    print(' ++++++++++++++++++++++ state is $state');
     switch (state.runtimeType) {
       case HomeLoading:
         return const Center(child: CircularProgressIndicator());

@@ -32,7 +32,7 @@ class PoemModel {
       author: json['author'],
       createdAt: (json['createdAt'] as Timestamp).toDate(),
       authorId: (json['authorId']),
-      type: AppStrings.POEM,
+      type: AppStrings.POEM_Firebase_model,
       likes: (json['likes']),
     );
   }

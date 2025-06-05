@@ -25,39 +25,42 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        title: Text(
-          'Profile page',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        title: Text('Profile page', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.blueGrey,
       ),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
+      body: BlocConsumer<ProfileBloc, ProfileState>(
+        listener: (context, state) {
+          if (state is ProfileUpdated) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ma`lumotlar yangilandi!')));
+          }
+          if (state is LoggedOut) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Akkauntdan chiqildi!')));
+            context.go(AppRoutes.HomePage);
+          }
+        },
         builder: (context, state) {
           if (state is LoggedOut) {
             return Center(child: Text('Logging out...'));
           } else if (state is ProfileLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ProfileLoaded) {
-            nameController.text = state.displayName ?? '';
+            nameController.text = state.user.displayName ?? '';
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Email: ${state.email ?? "Noma'lum"}'),
+                  Center(child: CircleAvatar(radius: 50, backgroundImage: NetworkImage(state.user.photoURL ?? ''))),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(labelText: 'Ism'),
-                  ),
+                  Text('Email: ${state.user.email ?? "Noma'lum"}'),
+                  const SizedBox(height: 16),
+                  TextField(controller: nameController, decoration: InputDecoration(labelText: 'Ism')),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       final name = nameController.text.trim();
                       if (name.isNotEmpty) {
-                        context.read<ProfileBloc>().add(
-                          UpdateDisplayName(name),
-                        );
+                        context.read<ProfileBloc>().add(UpdateDisplayName(name));
                       }
                     },
                     child: const Text('Ismni saqlash'),

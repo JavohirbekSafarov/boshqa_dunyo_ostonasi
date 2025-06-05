@@ -33,7 +33,7 @@ class PicModel {
       author: json['author'],
       createdAt: (json['createdAt'] as Timestamp).toDate(), 
       authorId: (json['authorId']), 
-      type: AppStrings.PIC, 
+      type: AppStrings.PIC_Firebase_model,
       likes: (json['likes']),
     );
   }

@@ -3,10 +3,13 @@ import 'package:boshqa_dunyo_ostonasi/features/pic/domain/entities/pic.dart';
 import 'package:boshqa_dunyo_ostonasi/features/pic/presentation/pages/pic_detail_page.dart';
 import 'package:boshqa_dunyo_ostonasi/features/poem/domain/entities/poem.dart';
 import 'package:boshqa_dunyo_ostonasi/features/poem/presentation/pages/poem_detail_page.dart';
+import 'package:boshqa_dunyo_ostonasi/features/shop/presentation/pages/book_detail_page.dart';
+import 'package:boshqa_dunyo_ostonasi/features/shop/presentation/pages/upload_book_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/shop/data/enties/book_model.dart';
 import '../../features/upload/presentation/pages/upload_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/shop/presentation/pages/shop_page.dart';
@@ -49,6 +52,17 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.LoginPage,
       builder: (context, state) => LoginPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.BookUploadPage,
+      builder: (context, state) => UploadBookPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.BookDetailPage,
+      builder: (context, state){
+        final book = state.extra as Book;
+        return BookDetailPage(book: book);
+      },
     ),
     GoRoute(
       path: AppRoutes.PicDetailPage,

@@ -2,6 +2,8 @@ import 'package:boshqa_dunyo_ostonasi/core/router/app_router.dart';
 import 'package:boshqa_dunyo_ostonasi/features/home/data/repository_impl/feedrepository_impl.dart';
 import 'package:boshqa_dunyo_ostonasi/features/home/presentation/bloc/home_bloc.dart';
 import 'package:boshqa_dunyo_ostonasi/features/profile/presentation/bloc/bloc/profile_bloc.dart';
+import 'package:boshqa_dunyo_ostonasi/features/shop/domain/abstract/shop_repository.dart';
+import 'package:boshqa_dunyo_ostonasi/features/shop/presentation/bloc/shop_bloc.dart';
 import 'package:boshqa_dunyo_ostonasi/features/upload/presentation/bloc/bloc/upload_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/home/domain/abstract/feedrepository.dart';
+import 'features/shop/data/repository_impl/shop_repo_impl.dart';
 
 void main() async {
   print('+++++++++++++++++++++++Firebase connecting...');
@@ -25,6 +28,7 @@ class MyApp extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final ShopRepository shopRepository = ShopRepositoryImpl(FirebaseFirestore.instance);
   final FeedRepository repository = FeedRepositoryImpl(
     firestore: FirebaseFirestore.instance,
   );
@@ -45,7 +49,8 @@ class MyApp extends StatelessWidget {
                 storage: _firebaseStorage,
               ),
         ),
-        BlocProvider(create: (_) => ProfileBloc(_auth))
+        BlocProvider(create: (_) => ProfileBloc(_auth)),
+        BlocProvider(create: (_) => ShopBloc(shopRepository)..add(LoadBooks()))
       ],
       child: MaterialApp.router(
         routerConfig: appRouter,

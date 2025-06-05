@@ -49,7 +49,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
           content: event.content ?? "",
           createdAt: createdAt,
           likes: 0,
-          type: AppStrings.POEM,
+          type: AppStrings.POEM_Firebase_model,
         );
 
         await firestore.collection('poem').doc(id).set({
@@ -70,7 +70,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
           content: imageUrl,
           createdAt: createdAt,
           likes: 0,
-          type: AppStrings.PIC,
+          type: AppStrings.PIC_Firebase_model,
         );
 
         await firestore.collection('pic').doc(id).set({

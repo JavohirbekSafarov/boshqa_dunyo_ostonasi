@@ -7,11 +7,8 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final String uid;
-  final String? email;
-  final String? displayName;
-
-  ProfileLoaded({required this.uid, this.email, this.displayName});
+  final User user;
+  ProfileLoaded(this.user);
 }
 
 class ProfileError extends ProfileState {
@@ -19,6 +16,5 @@ class ProfileError extends ProfileState {
   ProfileError(this.message);
 }
 
-class LoggedOut extends ProfileState{
-  
-}
+class LoggedOut extends ProfileState{}
+class ProfileUpdated extends ProfileState{}

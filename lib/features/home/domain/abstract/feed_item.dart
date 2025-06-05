@@ -19,6 +19,7 @@ abstract class FeedItem {
     required this.likes,
   });
 
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

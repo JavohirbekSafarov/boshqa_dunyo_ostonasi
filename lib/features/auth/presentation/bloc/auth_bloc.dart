@@ -1,3 +1,5 @@
+import 'package:boshqa_dunyo_ostonasi/core/constants/app_strings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,14 +28,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (user.isAnonymous) {
       emit(AuthAnonymous());
     } else {
-      emit(Authenticated(user.uid));
+      bool isAdmin = await checkIfAdmin(user.uid);
+      emit(Authenticated(user, isAdmin));
     }
   }
 
-  void _onLoggedIn(AuthLoggedIn event, Emitter<AuthState> emit) {
+  void _onLoggedIn(AuthLoggedIn event, Emitter<AuthState> emit) async {
     final user = _auth.currentUser;
     if (user != null && !user.isAnonymous) {
-      emit(Authenticated(user.uid));
+      bool isAdmin = await checkIfAdmin(user.uid);
+      emit(Authenticated(user, isAdmin));
     }
   }
 
@@ -56,7 +60,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       final userCred = await _auth.signInWithCredential(credential);
-      emit(Authenticated(userCred.user!.uid));
+      createUserInFirestore(userCred.user!);
+      bool isAdmin = await checkIfAdmin(userCred.user!.uid);
+      emit(Authenticated(userCred.user!, isAdmin));
     } catch (e) {
       print('Google login error: $e');
       emit(AuthAnonymous());
@@ -71,12 +77,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       final user = _auth.currentUser;
       if (user != null) {
-        emit(Authenticated(user.uid));
+        createUserInFirestore(user);
+        bool isAdmin = await checkIfAdmin(user.uid);
+        emit(Authenticated(user, isAdmin));
         print('+++++++++++++++++++++++++++Email login successfull!');
       }
     } catch (e) {
       print('+++++++++++++++++++++++++++Email login error: $e');
       emit(AuthAnonymous());
     }
+  }
+
+  ///  BU FAQAT USER CREATE BOLGANDA CHAQIRISH KERAK, LOGINDA EMAS
+  Future<void> createUserInFirestore(User user) async {
+    final userDoc = FirebaseFirestore.instance.collection(AppStrings.USER_Firebase_model).doc(user.uid);
+    final exists = await userDoc.get();
+
+    if (!exists.exists) {
+      await userDoc.set({
+        'name': user.displayName ?? '',
+        'email': user.email ?? '',
+        'isAdmin': false, // Default false
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+  }
+
+  Future<bool> checkIfAdmin(String uid) async {
+    final doc = await FirebaseFirestore.instance.collection(AppStrings.USER_Firebase_model).doc(uid).get();
+    return doc.exists && doc.data()?['isAdmin'] == true;
   }
 }

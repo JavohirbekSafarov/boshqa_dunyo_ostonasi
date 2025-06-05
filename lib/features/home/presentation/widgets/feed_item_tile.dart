@@ -15,13 +15,24 @@ class FeedItemTile extends StatelessWidget {
 
   const FeedItemTile({super.key, required this.item});
 
+  String getCreatedTime() {
+    int days = item.createdAt.difference(DateTime.now()).inDays * (-1);
+    int hours = item.createdAt.difference(DateTime.now()).inHours * (-1);
+    int minutes = item.createdAt.difference(DateTime.now()).inMinutes * (-1);
+    return days > 0
+        ? '$days kun oldin'
+        : hours > 0
+        ? '$hours soat oldin'
+        : '$minutes daqiqa oldin';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
       child: Card(
         child:
-            item.type == AppStrings.PIC
+            item.type == AppStrings.PIC_Firebase_model
                 ? ListTile(
                   onTap: () {
                     context.push(AppRoutes.PicDetailPage, extra: item as Pic);
@@ -33,80 +44,23 @@ class FeedItemTile extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                       placeholder: (context, url) {
                         return Center(
-                          child: SizedBox(
-                            height: 50.0,
-                            width: 50.0,
-                            child: Image.asset('assets/images/loading.gif'),
-                          ),
+                          child: SizedBox(height: 50.0, width: 50.0, child: Image.asset('assets/images/loading.gif')),
                         );
                       },
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
-                  // FadeInImage.assetNetwork(
-                  //   placeholder: 'assets/images/loading.gif',
-                  //   image: item.content,
-                  //   height: 200,
-                  //   width: 300,
-                  // ),
-                  subtitle: Row(
-                    children: [
-                      Expanded(child: Text('Author: ${item.author}')),
-                      _likeButton(context),
-                    ],
-                  ),
+                  subtitle: _subtitle(context),
                 )
                 : ListTile(
                   onTap: () {
                     context.push(AppRoutes.PoemDetailPage, extra: item as Poem);
                   },
-                  title: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 300),
-                    child:
-                        item.content.length > 30
-                            ? Text('${item.content.substring(0, 30)}...')
-                            : Text(item.content),
-                  ),
-
-                  subtitle: Row(
-                    children: [
-                      Expanded(child: Text('Author: ${item.author}')),
-                      _likeButton(context),
-                    ],
-                  ),
+                  title: item.title.length > 10 ? Text('${item.title.substring(0, 10)}...') : Text(item.title),
+                  subtitle: _subtitlePoem(context),
                 ),
       ),
     );
-    // return Card(
-    //   child: ListTile(
-    //     leading:
-    //         item.type == 'pic'
-    //             ? Image.network(
-    //               item.content,
-    //               width: 100,
-    //               height: 100,
-    //               fit: BoxFit.cover,
-    //             )
-    //             : const Icon(Icons.text_snippet_rounded),
-    //     title: Column(
-    //       children: [
-    //         Image.network(
-    //           item.content,
-    //           width: 100,
-    //           height: 100,
-    //           fit: BoxFit.cover,
-    //         ),
-    //         Text(item.type == 'poem' ? item.content.split('\n').first : 'Rasm'),
-    //       ],
-    //     ),
-    //     subtitle: Text("Muallif: ${item.author} • 👍 ${item.likes}"),
-    //     onTap: () {
-    //       context.push(
-    //         '/${item.type}/${item.id}',
-    //       ); // Masalan: /poem/1 yoki /pic/2
-    //     },
-    //   ),
-    // );
   }
 
   Widget _likeButton(BuildContext context) {
@@ -137,12 +91,30 @@ class FeedItemTile extends StatelessWidget {
               },
             );
       },
-      child: Row(
-        children: [
-          Icon(Icons.favorite, color: Colors.blueGrey),
-          Text(item.likes.toString()),
-        ],
-      ),
+      child: Row(children: [Icon(Icons.favorite, color: Colors.blueGrey), Text(item.likes.toString())]),
+    );
+  }
+
+  Widget _subtitle(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(children: [Expanded(child: Text(item.title)), _likeButton(context)]),
+        Row(children: [Expanded(child: Text('Author: ${item.author}')), Text(getCreatedTime())],),
+      ],
+    );
+  }
+
+  Widget _subtitlePoem(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(children: [Expanded(child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 300),
+          child: item.content.length > 50 ? Text('${item.content.substring(0, 50)}...') : Text(item.content),
+        ),), _likeButton(context)]),
+        Row(children: [Expanded(child: Text('Author: ${item.author}')), Text(getCreatedTime())],),
+      ],
     );
   }
 }

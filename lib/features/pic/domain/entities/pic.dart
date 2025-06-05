@@ -3,7 +3,7 @@ import 'package:boshqa_dunyo_ostonasi/features/home/domain/abstract/feed_item.da
 
 class Pic extends FeedItem {
   @override
-  final String type = AppStrings.PIC;
+  final String type = AppStrings.PIC_Firebase_model;
   Pic({
     required super.authorId,
     required super.id,

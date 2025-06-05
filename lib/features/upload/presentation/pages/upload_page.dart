@@ -66,7 +66,7 @@ class _UploadPageState extends State<UploadPage> {
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
         title: Text(
-          "Yuklash",
+          "Upload page",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -88,8 +88,8 @@ class _UploadPageState extends State<UploadPage> {
             titleController.clear();
             contentController.clear();
             setState(() => image = null);
-            context.read<HomeBloc>().add(RefreshFeed());
             context.go(AppRoutes.HomePage);
+            context.read<HomeBloc>().add(RefreshFeed());
           } else if (state is UploadFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Xatolik: ${state.message}")),

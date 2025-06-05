@@ -3,7 +3,7 @@ import 'package:boshqa_dunyo_ostonasi/features/home/domain/abstract/feed_item.da
 
 class Poem extends FeedItem {
   @override
-  final String type = AppStrings.POEM;
+  final String type = AppStrings.POEM_Firebase_model;
   Poem({
     required super.authorId,
     required super.id,

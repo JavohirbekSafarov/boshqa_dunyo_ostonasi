@@ -6,8 +6,9 @@ sealed class AuthState {}
 final class AuthInitial extends AuthState {}
 
 class Authenticated extends AuthState {
-  final String userId;
-  Authenticated(this.userId);
+  final User user;
+  final bool isAdmin;
+  Authenticated(this.user, this.isAdmin);
 }
 
 class Unauthenticated extends AuthState {

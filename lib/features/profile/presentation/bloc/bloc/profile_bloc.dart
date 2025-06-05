@@ -14,11 +14,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         final user = _auth.currentUser;
         if (user != null) {
           emit(
-            ProfileLoaded(
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName,
-            ),
+            ProfileLoaded(user),
           );
         } else {
           emit(ProfileError('Foydalanuvchi topilmadi'));
@@ -34,6 +30,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         if (user != null) {
           await user.updateDisplayName(event.displayName);
           add(LoadUserProfile());
+          emit(ProfileUpdated());
         }
       } catch (e) {
         emit(ProfileError('Ismni yangilashda xatolik: $e'));

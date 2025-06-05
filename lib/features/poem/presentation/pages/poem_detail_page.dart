@@ -17,6 +17,7 @@ class PoemDetailPage extends StatefulWidget {
 
 class _PoemDetailPageState extends State<PoemDetailPage> {
   bool _isLiked = false;
+
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = context.read<AuthBloc>().state is Authenticated;
@@ -26,17 +27,11 @@ class _PoemDetailPageState extends State<PoemDetailPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueGrey,
-        title: Text(
-          widget.poem.title,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        title: Text(widget.poem.title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         actions: [
           isLoggedIn
               ? IconButton(
-                icon: Icon(
-                  Icons.favorite_border,
-                  color: _isLiked ? Colors.red : Colors.white,
-                ),
+                icon: Icon(Icons.favorite_border, color: _isLiked ? Colors.red : Colors.white),
                 onPressed: () {
                   if (!_isLiked) {
                     context.read<HomeBloc>().add(LikeItem(widget.poem));
@@ -44,9 +39,7 @@ class _PoemDetailPageState extends State<PoemDetailPage> {
                       _isLiked = true;
                     });
                   } else {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Yoqtirilgan!')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Yoqtirilgan!')));
                   }
                 },
               )
@@ -59,11 +52,18 @@ class _PoemDetailPageState extends State<PoemDetailPage> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Scrollbar(
-          child: Text(widget.poem.content, style: TextStyle(fontSize: 18)),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+                child: SingleChildScrollView(child: Text(widget.poem.content, style: TextStyle(fontSize: 18))),
+
+            ),
+          ],
         ),
       ),
+
       /*   floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
