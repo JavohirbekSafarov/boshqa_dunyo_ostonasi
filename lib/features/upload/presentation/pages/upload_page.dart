@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:boshqa_dunyo_ostonasi/core/constants/app_strings.dart';
 import 'package:boshqa_dunyo_ostonasi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:boshqa_dunyo_ostonasi/features/home/presentation/bloc/home_bloc.dart';
 import 'package:boshqa_dunyo_ostonasi/features/upload/presentation/bloc/bloc/upload_bloc.dart';
@@ -36,26 +37,17 @@ class _UploadPageState extends State<UploadPage> {
     final content = contentController.text.trim();
 
     if (isPoem && (title.isEmpty || content.isEmpty)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("She’r ma’lumotlari to‘liq emas")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("She’r ma’lumotlari to‘liq emas")));
       return;
     }
 
     if (!isPoem && image == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Rasm tanlanmagan")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Rasm tanlanmagan")));
       return;
     }
 
     context.read<UploadBloc>().add(
-      UploadRequested(
-        isPoem: isPoem,
-        title: title,
-        content: content,
-        image: image != null ? File(image!.path) : null,
-      ),
+      UploadRequested(isPoem: isPoem, title: title, content: content, image: image != null ? File(image!.path) : null),
     );
   }
 
@@ -63,37 +55,33 @@ class _UploadPageState extends State<UploadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        title: Text(
-          "Upload page",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => setState(() => isPoem = !isPoem),
-            child: Text(
-              isPoem ? "Rasm yuklash" : "She’r yuklash",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
+      appBar:
+          context.read<AuthBloc>().state is Authenticated
+              ? AppBar(
+                backgroundColor: Colors.blueGrey,
+                title: Text(
+                  AppStrings.UPLOAD_PAGE_TITLE,
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => setState(() => isPoem = !isPoem),
+                    child: Text(isPoem ? "Rasm yuklash" : "She’r yuklash", style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+              )
+              : null,
       body: BlocConsumer<UploadBloc, UploadState>(
         listener: (context, state) {
           if (state is UploadSuccess) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Muvaffaqiyatli yuklandi")));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Muvaffaqiyatli yuklandi")));
             titleController.clear();
             contentController.clear();
             setState(() => image = null);
             context.go(AppRoutes.HomePage);
             context.read<HomeBloc>().add(RefreshFeed());
           } else if (state is UploadFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Xatolik: ${state.message}")),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Xatolik: ${state.message}")));
           }
         },
         builder: (context, state) {
@@ -102,10 +90,7 @@ class _UploadPageState extends State<UploadPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: ListView(
                   children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: InputDecoration(labelText: "Sarlavha"),
-                    ),
+                    TextField(controller: titleController, decoration: InputDecoration(labelText: "Sarlavha")),
                     if (isPoem)
                       TextField(
                         controller: contentController,
@@ -131,10 +116,7 @@ class _UploadPageState extends State<UploadPage> {
                     const SizedBox(height: 16),
                     state is UploadLoading
                         ? Center(child: CircularProgressIndicator())
-                        : ElevatedButton(
-                          onPressed: _upload,
-                          child: Text("Yuklash"),
-                        ),
+                        : ElevatedButton(onPressed: _upload, child: Text("Yuklash")),
                   ],
                 ),
               )
@@ -148,15 +130,13 @@ class _UploadPageState extends State<UploadPage> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Expanded(
-                            child: Text('Yuklash uchun akkauntga kiring!'),
-                          ),
+                          Expanded(child: Text('Yuklash uchun akkauntga kiring!', style: TextStyle(color: Colors.black, fontSize: 18),)),
 
                           ElevatedButton(
                             onPressed: () {
                               context.go(AppRoutes.LoginPage);
                             },
-                            child: Text("Kirish"),
+                            child: Text("Kirish", style: TextStyle(color: Colors.black),),
                           ),
                         ],
                       ),

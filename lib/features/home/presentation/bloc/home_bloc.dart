@@ -19,15 +19,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _homeLoad(LoadFeed event, Emitter<HomeState> emit) async {
     emit(HomeLoading());
-    final items = await repository.fetchFeed();
-    emit(HomeLoaded(items));
+    try {
+      final items = await repository.fetchFeed();
+      emit(HomeLoaded(items));
+    } catch (e) {
+      emit(HomeError(e.toString()));
+    }
   }
 
   void _homeReload(RefreshFeed event, Emitter<HomeState> emit) async {
     final items = await repository.fetchFeed();
     emit(HomeLoading());
     emit(HomeLoaded(items));
-/*
+    /*
     final currentState = state;
     if (currentState is HomeLoaded) {
       //final lastTime = currentState.items.map((e) => e.createdAt).reduce((a, b) => a.isAfter(b) ? a : b);

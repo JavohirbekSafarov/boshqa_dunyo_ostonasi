@@ -13,4 +13,10 @@ class AppStrings {
   static const String PROFILE = 'Profile';
   static const String SHOP = 'Shop';
 
+  static const String SHOP_PAGE_TITLE = 'Do\'kon';
+  static const String HOME_PAGE_TITLE = 'Asosiy';
+  static const String UPLOAD_PAGE_TITLE = 'Yuklash';
+  static const String PROFILE_PAGE_TITLE = 'Profil';
+  static const String LOGIN_PAGE_TITLE = 'Login';
+
 }

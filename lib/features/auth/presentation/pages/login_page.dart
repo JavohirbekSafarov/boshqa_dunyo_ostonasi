@@ -1,3 +1,4 @@
+import 'package:boshqa_dunyo_ostonasi/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +40,7 @@ class LoginPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Login', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            title: Text(AppStrings.LOGIN_PAGE_TITLE, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             backgroundColor: Colors.blueGrey,
           ),
           body: Padding(

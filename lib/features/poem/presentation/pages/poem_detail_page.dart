@@ -5,6 +5,7 @@ import 'package:boshqa_dunyo_ostonasi/features/poem/domain/entities/poem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:line_icons/line_icons.dart';
 
 class PoemDetailPage extends StatefulWidget {
   final Poem poem;
@@ -45,9 +46,9 @@ class _PoemDetailPageState extends State<PoemDetailPage> {
               )
               : IconButton(
                 onPressed: () {
-                  context.push(AppRoutes.LoginPage);
+                  context.go(AppRoutes.LoginPage);
                 },
-                icon: Icon(Icons.login),
+                icon: Icon(LineIcons.doorClosed, color: Colors.white),
               ),
         ],
       ),
@@ -56,10 +57,7 @@ class _PoemDetailPageState extends State<PoemDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-                child: SingleChildScrollView(child: Text(widget.poem.content, style: TextStyle(fontSize: 18))),
-
-            ),
+            Expanded(child: SingleChildScrollView(child: Text(widget.poem.content, style: TextStyle(fontSize: 18)))),
           ],
         ),
       ),

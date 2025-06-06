@@ -13,18 +13,12 @@ class FeedRepositoryImpl implements FeedRepository {
 
   @override
   Future<List<FeedItem>> fetchFeed() async {
-    final poemsSnapshot = await firestore.collection('poem').get();
-    final picsSnapshot = await firestore.collection('pic').get();
+    final poemsSnapshot = await firestore.collection(AppStrings.POEM_Firebase_model).get();
+    final picsSnapshot = await firestore.collection(AppStrings.PIC_Firebase_model).get();
 
-    final poems =
-        poemsSnapshot.docs
-            .map((doc) => PoemModel.fromJson(doc.data()).toEntity())
-            .toList();
+    final poems = poemsSnapshot.docs.map((doc) => PoemModel.fromJson(doc.data()).toEntity()).toList();
 
-    final pics =
-        picsSnapshot.docs
-            .map((doc) => PicModel.fromJson(doc.data()).toEntity())
-            .toList();
+    final pics = picsSnapshot.docs.map((doc) => PicModel.fromJson(doc.data()).toEntity()).toList();
 
     // combine and sort
     final all = [...poems, ...pics];
@@ -33,28 +27,6 @@ class FeedRepositoryImpl implements FeedRepository {
     return all;
   }
 
-/*
-  @override
-  Future<List<FeedItem>> fetchFeed1({DateTime? since}) async {
-    final poemsQuery = firestore.collection(AppStrings.POEM);
-    final picsQuery = firestore.collection(AppStrings.PIC);
-
-    if (since != null) {
-      poemsQuery.where('createdAt', isGreaterThan: since,);
-      picsQuery.where('createdAt', isGreaterThan: since);
-    }
-
-    final poemsSnapshot = await poemsQuery.get();
-    final picsSnapshot = await picsQuery.get();
-
-    final poems = poemsSnapshot.docs.map((d) => PoemModel.fromJson(d.data()).toEntity()).toList();
-    final pics = picsSnapshot.docs.map((d) => PicModel.fromJson(d.data()).toEntity()).toList();
-
-    return [...poems, ...pics];
-  }
-*/
-
-
   @override
   Future<FeedItem> likeItem(FeedItem item) async {
     final collection = item.type;
@@ -62,12 +34,30 @@ class FeedRepositoryImpl implements FeedRepository {
 
     await docRef.update({'likes': item.likes + 1}).then((value) {
       print('++++++++++++++++++ Like added ');
-    },);
+    });
 
     if (item.type == AppStrings.POEM_Firebase_model) {
-      return PoemModel(authorId: item.author, author: item.author, content: item.content, createdAt: item.createdAt, id: item.id, likes: item.likes + 1, title: item.title, type: item.type).toEntity();
+      return PoemModel(
+        authorId: item.author,
+        author: item.author,
+        content: item.content,
+        createdAt: item.createdAt,
+        id: item.id,
+        likes: item.likes + 1,
+        title: item.title,
+        type: item.type,
+      ).toEntity();
     } else {
-      return PicModel(authorId: item.author, author: item.author, content: item.content, createdAt: item.createdAt, id: item.id, likes: item.likes + 1, title: item.title, type: item.type).toEntity();
+      return PicModel(
+        authorId: item.author,
+        author: item.author,
+        content: item.content,
+        createdAt: item.createdAt,
+        id: item.id,
+        likes: item.likes + 1,
+        title: item.title,
+        type: item.type,
+      ).toEntity();
     }
 
     //print('++++++++++++++++Like adding... feed repo impl dart');

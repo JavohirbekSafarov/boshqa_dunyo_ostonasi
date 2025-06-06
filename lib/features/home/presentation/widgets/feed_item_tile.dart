@@ -72,19 +72,22 @@ class FeedItemTile extends StatelessWidget {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Yoqtirish uchun akkauntga kiring!'),
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Yoqtirish uchun akkauntga kiring!', style: TextStyle(fontSize: 18),),
+                  ),
                   actions: [
                     ElevatedButton(
                       onPressed: () {
                         context.go(AppRoutes.LoginPage);
                       },
-                      child: Text('Kirish'),
+                      child: Text('Kirish', style: TextStyle(color: Colors.black),),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         context.pop();
                       },
-                      child: Text('Ok'),
+                      child: Text('Ok', style: TextStyle(color: Colors.black),),
                     ),
                   ],
                 );

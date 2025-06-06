@@ -1,11 +1,11 @@
 import 'package:boshqa_dunyo_ostonasi/core/constants/app_routes.dart';
+import 'package:boshqa_dunyo_ostonasi/core/constants/app_strings.dart';
 import 'package:boshqa_dunyo_ostonasi/features/shop/presentation/bloc/shop_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../data/enties/book_model.dart';
 
 class ShopPage extends StatelessWidget {
   const ShopPage({super.key});
@@ -15,7 +15,8 @@ class ShopPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        title: const Text('Shop', style: TextStyle(color: Colors.white),),
+        automaticallyImplyLeading: false,
+        title: const Text(AppStrings.SHOP_PAGE_TITLE, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         backgroundColor: Colors.blueGrey,
         actions: [
           BlocBuilder<AuthBloc, AuthState>(

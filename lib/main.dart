@@ -26,10 +26,10 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-  final ShopRepository shopRepository = ShopRepositoryImpl(FirebaseFirestore.instance);
-  final FeedRepository repository = FeedRepositoryImpl(
+  late final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  late final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  late final ShopRepository shopRepository = ShopRepositoryImpl(FirebaseFirestore.instance);
+  late final FeedRepository repository = FeedRepositoryImpl(
     firestore: FirebaseFirestore.instance,
   );
 
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         routerConfig: appRouter,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Handlee'),
+        theme: ThemeData(fontFamily: 'Handlee', colorSchemeSeed: Colors.blueGrey),
       ),
     );
   }

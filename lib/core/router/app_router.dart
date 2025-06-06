@@ -21,7 +21,7 @@ final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.HomePage,
   redirect: (context, state) {
     final user = _auth.currentUser;
-    final goingToLogin = state.matchedLocation == AppRoutes.LoginPage;
+    final goingToLogin = state.matchedLocation == AppRoutes.HomePage;
     if (user == null && !goingToLogin) {
       return AppRoutes.LoginPage;
     }

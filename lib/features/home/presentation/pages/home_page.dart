@@ -1,8 +1,10 @@
 import 'package:boshqa_dunyo_ostonasi/core/constants/app_routes.dart';
+import 'package:boshqa_dunyo_ostonasi/core/constants/app_strings.dart';
 import 'package:boshqa_dunyo_ostonasi/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:line_icons/line_icons.dart';
 
 import '../bloc/home_bloc.dart';
 import '../widgets/feed_item_tile.dart';
@@ -15,22 +17,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Home page',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        title: Text(AppStrings.HOME_PAGE_TITLE, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.blueGrey,
         actions: [
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               if (state is! Authenticated) {
                 return IconButton(
-                  icon: const Icon(Icons.login),
+                  icon: const Icon(LineIcons.doorClosed, color: Colors.white),
                   onPressed: () {
                     context.go(AppRoutes.LoginPage);
                   },
