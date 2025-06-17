@@ -97,8 +97,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await userDoc.set({
         'name': user.displayName ?? '',
         'email': user.email ?? '',
-        'isAdmin': false, // Default false
+        'isAdmin': false,
         'createdAt': FieldValue.serverTimestamp(),
+        'photoURL': user.photoURL ?? ''
       });
     }
   }

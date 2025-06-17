@@ -19,7 +19,9 @@ class FeedItemTile extends StatelessWidget {
     int days = item.createdAt.difference(DateTime.now()).inDays * (-1);
     int hours = item.createdAt.difference(DateTime.now()).inHours * (-1);
     int minutes = item.createdAt.difference(DateTime.now()).inMinutes * (-1);
-    return days > 0
+    return days > 30
+        ? '${days ~/ 30} oy oldin'
+        : days > 0
         ? '$days kun oldin'
         : hours > 0
         ? '$hours soat oldin'
@@ -74,20 +76,20 @@ class FeedItemTile extends StatelessWidget {
                 return AlertDialog(
                   title: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('Yoqtirish uchun akkauntga kiring!', style: TextStyle(fontSize: 18),),
+                    child: Text('Yoqtirish uchun akkauntga kiring!', style: TextStyle(fontSize: 18)),
                   ),
                   actions: [
                     ElevatedButton(
                       onPressed: () {
                         context.go(AppRoutes.LoginPage);
                       },
-                      child: Text('Kirish', style: TextStyle(color: Colors.black),),
+                      child: Text('Kirish', style: TextStyle(color: Colors.black)),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         context.pop();
                       },
-                      child: Text('Ok', style: TextStyle(color: Colors.black),),
+                      child: Text('Ok', style: TextStyle(color: Colors.black)),
                     ),
                   ],
                 );
@@ -103,7 +105,7 @@ class FeedItemTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Row(children: [Expanded(child: Text(item.title)), _likeButton(context)]),
-        Row(children: [Expanded(child: Text('Author: ${item.author}')), Text(getCreatedTime())],),
+        Row(children: [Expanded(child: Text('Author: ${item.author}')), Text(getCreatedTime())]),
       ],
     );
   }
@@ -112,11 +114,18 @@ class FeedItemTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Row(children: [Expanded(child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 300),
-          child: item.content.length > 50 ? Text('${item.content.substring(0, 50)}...') : Text(item.content),
-        ),), _likeButton(context)]),
-        Row(children: [Expanded(child: Text('Author: ${item.author}')), Text(getCreatedTime())],),
+        Row(
+          children: [
+            Expanded(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 300),
+                child: item.content.length > 50 ? Text('${item.content.substring(0, 50)}...') : Text(item.content),
+              ),
+            ),
+            _likeButton(context),
+          ],
+        ),
+        Row(children: [Expanded(child: Text('Author: ${item.author}')), Text(getCreatedTime())]),
       ],
     );
   }
