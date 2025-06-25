@@ -17,7 +17,7 @@ class Book {
     //required this.price,
   });
 
-factory Book.fromJson(Map<String, dynamic> json, String id) => Book(
+  factory Book.fromJson(Map<String, dynamic> json, String id) => Book(
     id: id,
     title: json['title'],
     description: json['description'],

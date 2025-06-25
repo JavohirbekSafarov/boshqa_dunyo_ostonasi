@@ -99,7 +99,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         'email': user.email ?? '',
         'isAdmin': false,
         'createdAt': FieldValue.serverTimestamp(),
-        'photoURL': user.photoURL ?? ''
+        'photoURL': user.photoURL ?? '',
+        'likedPosts': [],
       });
     }
   }

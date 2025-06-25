@@ -20,3 +20,5 @@ class HomeError extends HomeState {
   final String message;
   const HomeError(this.message);
 }
+
+

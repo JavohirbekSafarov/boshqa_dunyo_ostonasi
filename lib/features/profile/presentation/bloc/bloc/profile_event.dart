@@ -10,3 +10,5 @@ class UpdateDisplayName extends ProfileEvent {
 }
 
 class LogoutRequested extends ProfileEvent {}
+
+

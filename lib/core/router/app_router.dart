@@ -3,6 +3,7 @@ import 'package:boshqa_dunyo_ostonasi/features/pic/domain/entities/pic.dart';
 import 'package:boshqa_dunyo_ostonasi/features/pic/presentation/pages/pic_detail_page.dart';
 import 'package:boshqa_dunyo_ostonasi/features/poem/domain/entities/poem.dart';
 import 'package:boshqa_dunyo_ostonasi/features/poem/presentation/pages/poem_detail_page.dart';
+import 'package:boshqa_dunyo_ostonasi/features/profile/presentation/pages/profile_edit_page.dart';
 import 'package:boshqa_dunyo_ostonasi/features/shop/presentation/pages/book_detail_page.dart';
 import 'package:boshqa_dunyo_ostonasi/features/shop/presentation/pages/upload_book_page.dart';
 import 'package:go_router/go_router.dart';
@@ -59,7 +60,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.BookDetailPage,
-      builder: (context, state){
+      builder: (context, state) {
         final book = state.extra as Book;
         return BookDetailPage(book: book);
       },
@@ -76,6 +77,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final poem = state.extra as Poem;
         return PoemDetailPage(poem: poem);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.ProfileEditPage,
+      builder: (context, state) {
+        return ProfileEditPage();
       },
     ),
   ],

@@ -37,7 +37,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       final user = auth.currentUser;
       if (user == null) throw Exception("Foydalanuvchi mavjud emas");
 
-      final id = firestore.collection('poem').doc().id;
+      final id = firestore.collection(AppStrings.POEM_Firebase_model).doc().id;
       final createdAt = DateTime.now();
 
       if (event.isPoem) {
@@ -52,7 +52,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
           type: AppStrings.POEM_Firebase_model,
         );
 
-        await firestore.collection('poem').doc(id).set({
+        await firestore.collection(AppStrings.POEM_Firebase_model).doc(id).set({
           ...poem.toJson(),
           'createdAt': Timestamp.fromDate(createdAt),
         });
@@ -73,7 +73,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
           type: AppStrings.PIC_Firebase_model,
         );
 
-        await firestore.collection('pic').doc(id).set({
+        await firestore.collection(AppStrings.PIC_Firebase_model).doc(id).set({
           ...pic.toJson(),
           'createdAt': Timestamp.fromDate(createdAt),
         });

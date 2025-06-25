@@ -27,9 +27,9 @@ class _ProfilePageState extends State<ProfilePage> {
     context.read<ProfileBloc>().add(LoadUserProfile());
     menuItems = [
       Menu('Profil', 'Profilni tahrirlash', Icon(LineIcons.userEdit), () {
-        context.push(AppRoutes.ShopPage);
+        context.push(AppRoutes.ProfileEditPage);
       }),
-      Menu('Do\'kon', 'Kitob do\'konni ko\'rish', Icon(LineIcons.shoppingBag), () {
+      Menu('Kutubxona', 'Kitoblarni ko\'rish', Icon(LineIcons.book), () {
         context.push(AppRoutes.ShopPage);
       }),
     ];
@@ -45,7 +45,10 @@ class _ProfilePageState extends State<ProfilePage> {
             appBar: AppBar(
               title: Text(
                 AppStrings.PROFILE_PAGE_TITLE,
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               backgroundColor: Colors.blueGrey,
               actions: [
@@ -60,10 +63,14 @@ class _ProfilePageState extends State<ProfilePage> {
             body: BlocConsumer<ProfileBloc, ProfileState>(
               listener: (context, state) {
                 if (state is ProfileUpdated) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ma`lumotlar yangilandi!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Ma`lumotlar yangilandi!')),
+                  );
                 }
                 if (state is LoggedOut) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Akkauntdan chiqildi!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Akkauntdan chiqildi!')),
+                  );
                   context.go(AppRoutes.HomePage);
                 }
               },
@@ -81,30 +88,45 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Center(
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: CachedNetworkImage(
-                              imageUrl: state.user.photoURL ?? '',
-                              fit: BoxFit.fitWidth,
-                              placeholder: (context, url) {
-                                return Center(
-                                  child: SizedBox(
-                                    height: 50.0,
-                                    width: 50.0,
-                                    child: Image.asset('assets/images/loading.gif'),
-                                  ),
-                                );
-                              },
-                              errorWidget: (context, url, error) => Icon(Icons.error),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(200),
+                            ),
+                            child: SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: CachedNetworkImage(
+                                imageUrl: state.user.photoURL ?? '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) {
+                                  return Center(
+                                    child: SizedBox(
+                                      height: 50.0,
+                                      width: 50.0,
+                                      child: Image.asset(
+                                        'assets/images/loading.gif',
+                                      ),
+                                    ),
+                                  );
+                                },
+                                errorWidget:
+                                    (context, url, error) => Icon(Icons.error),
+                              ),
                             ),
                           ),
                         ),
-                      /*  const SizedBox(height: 16),
+                        /*  const SizedBox(height: 16),
                         TextField(controller: nameController, decoration: InputDecoration(labelText: 'Ism')),*/
                         const SizedBox(height: 16),
-                        Text(state.user.displayName ?? "Noma'lum", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
+                        Text(
+                          state.user.displayName ?? "Noma'lum",
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         Text('Email: ${state.user.email ?? "Noma'lum"}'),
                         const SizedBox(height: 16),
-                       /* ElevatedButton(
+                        /* ElevatedButton(
                           onPressed: () {
                             final name = nameController.text.trim();
                             if (name.isNotEmpty) {
@@ -131,15 +153,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueGrey),
+                                    color: Colors.white,
+
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: InkWell(
                                     onTap: item.onTap,
                                     child: ListTile(
                                       title: Text(item.title),
-                                      subtitle: Text(item.subtitle, style: TextStyle(color: Colors.blueGrey, fontSize: 12)),
-                                      leading: Icon(item.icon.icon, color: Colors.blueGrey[800]),
+                                      subtitle: Text(
+                                        item.subtitle,
+                                        style: TextStyle(
+                                          color: Colors.blueGrey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      leading: Icon(
+                                        item.icon.icon,
+                                        color: Colors.blueGrey[800],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -182,7 +214,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () {
                             context.go(AppRoutes.LoginPage);
                           },
-                          child: Text("Kirish", style: TextStyle(color: Colors.black)),
+                          child: Text(
+                            "Kirish",
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ],
                     ),

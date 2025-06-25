@@ -17,4 +17,5 @@ class ProfileError extends ProfileState {
 }
 
 class LoggedOut extends ProfileState{}
+
 class ProfileUpdated extends ProfileState{}

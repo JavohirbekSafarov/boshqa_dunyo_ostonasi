@@ -1,4 +1,3 @@
-import 'package:boshqa_dunyo_ostonasi/features/poem/domain/entities/poem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../pic/data/models/pic_model.dart';
@@ -27,38 +26,103 @@ class FeedRepositoryImpl implements FeedRepository {
     return all;
   }
 
-  @override
-  Future<FeedItem> likeItem(FeedItem item) async {
+  // @override
+  // Future<FeedItem> likeItem(FeedItem item) async {
+  //   final collection = item.type;
+  //   final docRef = firestore.collection(collection).doc(item.id);
+
+  //   await docRef.update({'likes': item.likes + 1}).then((value) {
+  //     print('++++++++++++++++++ Like added ');
+  //   });
+
+  //   if (item.type == AppStrings.POEM_Firebase_model) {
+  //     return PoemModel(
+  //       authorId: item.author,
+  //       author: item.author,
+  //       content: item.content,
+  //       createdAt: item.createdAt,
+  //       id: item.id,
+  //       likes: item.likes + 1,
+  //       title: item.title,
+  //       type: item.type,
+  //     ).toEntity();
+  //   } else {
+  //     return PicModel(
+  //       authorId: item.author,
+  //       author: item.author,
+  //       content: item.content,
+  //       createdAt: item.createdAt,
+  //       id: item.id,
+  //       likes: item.likes + 1,
+  //       title: item.title,
+  //       type: item.type,
+  //     ).toEntity();
+  //   }
+@override
+  Future<FeedItem> likeItem(FeedItem item, String userId) async {
     final collection = item.type;
     final docRef = firestore.collection(collection).doc(item.id);
+    final userRef = firestore.collection(AppStrings.USER_Firebase_model).doc(userId);
 
-    await docRef.update({'likes': item.likes + 1}).then((value) {
-      print('++++++++++++++++++ Like added ');
+    return await firestore.runTransaction((transaction) async {
+      // Get the user document to check likedPosts
+      final userSnapshot = await transaction.get(userRef);
+      if (!userSnapshot.exists) {
+        throw Exception("User does not exist!");
+      }
+
+      // Get the current likedPosts array or initialize as empty
+      final likedPosts = List<String>.from(userSnapshot.data()?['likedPosts'] ?? []);
+
+      // Check if the user has already liked the post
+      if (likedPosts.contains(item.id)) {
+        throw Exception("User has already liked this post!");
+      }
+
+      // Get the post document
+      final postSnapshot = await transaction.get(docRef);
+      if (!postSnapshot.exists) {
+        throw Exception("Post does not exist!");
+      }
+
+      // Increment likes count
+      final currentLikes = postSnapshot.data()?['likes'] ?? 0;
+      transaction.update(docRef, {'likes': currentLikes + 1});
+
+      // Add post ID to user's likedPosts
+      transaction.update(userRef, {
+        'likedPosts': FieldValue.arrayUnion([item.id]),
+      });
+
+      // Return updated FeedItem
+      if (item.type == AppStrings.POEM_Firebase_model) {
+        return PoemModel(
+          authorId: item.author,
+          author: item.author,
+          content: item.content,
+          createdAt: item.createdAt,
+          id: item.id,
+          likes: currentLikes + 1,
+          title: item.title,
+          type: item.type,
+        ).toEntity();
+      } else {
+        return PicModel(
+          authorId: item.author,
+          author: item.author,
+          content: item.content,
+          createdAt: item.createdAt,
+          id: item.id,
+          likes: currentLikes + 1,
+          title: item.title,
+          type: item.type,
+        ).toEntity();
+      }
+    }).catchError((error) {
+      print("Failed to like post: $error");
+      throw error; // Rethrow to handle in UI
     });
-
-    if (item.type == AppStrings.POEM_Firebase_model) {
-      return PoemModel(
-        authorId: item.author,
-        author: item.author,
-        content: item.content,
-        createdAt: item.createdAt,
-        id: item.id,
-        likes: item.likes + 1,
-        title: item.title,
-        type: item.type,
-      ).toEntity();
-    } else {
-      return PicModel(
-        authorId: item.author,
-        author: item.author,
-        content: item.content,
-        createdAt: item.createdAt,
-        id: item.id,
-        likes: item.likes + 1,
-        title: item.title,
-        type: item.type,
-      ).toEntity();
-    }
+  
 
     //print('++++++++++++++++Like adding... feed repo impl dart');
     /*final docRef = firestore.collection(collection).doc(id);

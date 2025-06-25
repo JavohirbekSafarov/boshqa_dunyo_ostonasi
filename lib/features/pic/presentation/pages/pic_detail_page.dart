@@ -1,6 +1,8 @@
 import 'package:boshqa_dunyo_ostonasi/core/constants/app_routes.dart';
+import 'package:boshqa_dunyo_ostonasi/core/constants/app_strings.dart';
 import 'package:boshqa_dunyo_ostonasi/features/home/presentation/bloc/home_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -18,38 +20,68 @@ class PicDetailPage extends StatefulWidget {
 }
 
 class _PicDetailPageState extends State<PicDetailPage> {
-  bool _isLiked = false;
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = context.read<AuthBloc>().state is Authenticated;
+    final authState = context.read<AuthBloc>().state;
+    final userId = authState is Authenticated ? authState.user.uid : null;
 
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueGrey,
-        title: Text(widget.pic.title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text(
+          widget.pic.title,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         actions: [
-          if (isLoggedIn)
-            IconButton(
-              icon: Icon(Icons.favorite_border, color: _isLiked ? Colors.red : Colors.white),
-              onPressed: () {
-                if (!_isLiked) {
-                  context.read<HomeBloc>().add(LikeItem(widget.pic));
-                  setState(() {
-                    _isLiked = !_isLiked;
-                  });
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Yoqtirilgan!')));
-                }
-              },
-            )
-          else
-            IconButton(
-              icon: Icon(LineIcons.doorClosed, color: Colors.white),
-              onPressed: () => context.go(AppRoutes.LoginPage),
-            ),
+          userId != null
+              ? StreamBuilder<DocumentSnapshot>(
+                stream:
+                    FirebaseFirestore.instance
+                        .collection(AppStrings.USER_Firebase_model)
+                        .doc(userId)
+                        .snapshots(),
+                builder: (context, snapshot) {
+                  bool isLiked = false;
+                  if (snapshot.hasData && snapshot.data!.exists) {
+                    final likedPosts = List<dynamic>.from(
+                      (snapshot.data!.data()
+                              as Map<String, dynamic>)['likedPosts'] ??
+                          [],
+                    );
+                    isLiked = likedPosts.contains(widget.pic.id);
+                  }
+                  return IconButton(
+                    icon: Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      color: isLiked ? Colors.red : Colors.white,
+                    ),
+                    onPressed: () {
+                      if (authState is Authenticated) {
+                        if (!isLiked) {
+                          context.read<HomeBloc>().add(
+                            LikeItem(widget.pic, userId),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Bu rasm allaqachon yoqtirilgan!'),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                  );
+                },
+              )
+              : IconButton(
+                onPressed: () {
+                  context.go(AppRoutes.LoginPage);
+                },
+                icon: const Icon(LineIcons.doorClosed, color: Colors.white,),
+              ),
         ],
       ),
       body: Center(
@@ -64,7 +96,10 @@ class _PicDetailPageState extends State<PicDetailPage> {
                     child: SizedBox(
                       height: 50.0,
                       width: 50.0,
-                      child: CircularProgressIndicator(value: downloadProgress.progress, color: Colors.blueGrey),
+                      child: CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                        color: Colors.blueGrey,
+                      ),
                     ),
                   ),
               errorWidget: (context, url, error) => Icon(Icons.error),

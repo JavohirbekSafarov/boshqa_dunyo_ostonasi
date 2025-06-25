@@ -13,9 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       try {
         final user = _auth.currentUser;
         if (user != null) {
-          emit(
-            ProfileLoaded(user),
-          );
+          emit(ProfileLoaded(user));
         } else {
           emit(ProfileError('Foydalanuvchi topilmadi'));
         }

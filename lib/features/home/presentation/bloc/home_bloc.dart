@@ -1,4 +1,5 @@
 import 'package:boshqa_dunyo_ostonasi/features/home/domain/abstract/feed_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +16,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<LoadFeed>(_homeLoad);
     on<RefreshFeed>(_homeReload);
     on<LikeItem>(_likeItem);
+    on<DeleteItem>(_deleteItem);
+  }
+
+  void _deleteItem(DeleteItem event, Emitter<HomeState> emit) async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      //await repository.deleteItem(event.item);
+
+      final col = event.item.type;
+      await FirebaseFirestore.instance
+          .collection(col)
+          .doc(event.item.id)
+          .delete();
+
+      final updated =
+          currentState.items.where((e) => e.id != event.item.id).toList();
+      emit(HomeLoading());
+      emit(HomeLoaded(updated));
+    }
   }
 
   void _homeLoad(LoadFeed event, Emitter<HomeState> emit) async {
@@ -58,7 +78,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void _likeItem(LikeItem event, Emitter<HomeState> emit) async {
     final currentState = state;
     if (currentState is HomeLoaded) {
-      final updatedItem = await repository.likeItem(event.item);
+      final updatedItem = await repository.likeItem(event.item, event.userId);
 
       final updatedList =
           currentState.items.map((item) {

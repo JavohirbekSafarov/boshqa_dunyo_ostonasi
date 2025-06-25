@@ -10,12 +10,25 @@ class ShopRepositoryImpl implements ShopRepository {
 
   @override
   Future<void> uploadBook(Book book) async {
-    await firestore.collection(AppStrings.BOOK_Firebase_model).add(book.toJson());
+    String id = firestore.collection(AppStrings.BOOK_Firebase_model).doc().id;
+    Book newBook = Book(
+      id: id,
+      title: book.title,
+      description: book.description,
+      author: book.author,
+      coverUrl: book.coverUrl,
+      pdfUrl: book.pdfUrl,
+    );
+    await firestore
+        .collection(AppStrings.BOOK_Firebase_model)
+        .doc(id)
+        .set(newBook.toJson());
   }
 
   @override
   Future<List<Book>> fetchBooks() async {
-    final snapshot = await firestore.collection(AppStrings.BOOK_Firebase_model).get();
+    final snapshot =
+        await firestore.collection(AppStrings.BOOK_Firebase_model).get();
     return snapshot.docs
         .map((doc) => Book.fromJson(doc.data(), doc.id))
         .toList();
